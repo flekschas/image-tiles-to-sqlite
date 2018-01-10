@@ -2,17 +2,15 @@
 
 import os
 import math
-# import slugid
 import sqlite3
 import sys
-import time
 import argparse
 import json
 
 
 def store_meta_data(
     db, zoom_step, max_length, assembly, chrom_names,
-    chrom_sizes, tile_size, max_zoom, max_width, max_height, dtype, uid
+    chrom_sizes, tile_size, max_zoom, max_width, max_height, dtype
 ):
     db.execute('''
         CREATE TABLE tileset_info
@@ -26,14 +24,12 @@ def store_meta_data(
             max_zoom INT,
             max_height INT,
             max_width INT,
-            dtype TEXT,
-            uid TEXT,
-            created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            dtype TEXT
         )
         ''')
 
     db.execute(
-        'INSERT INTO tileset_info VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', (
+        'INSERT INTO tileset_info VALUES (?,?,?,?,?,?,?,?,?,?)', (
             zoom_step,
             max_length,
             assembly,
@@ -43,9 +39,7 @@ def store_meta_data(
             max_zoom,
             max_height,
             max_width,
-            dtype,
-            uid,
-            int(time.time())
+            dtype
         )
     )
     db.commit()
@@ -91,18 +85,17 @@ def image_tiles_to_sqlite(
         info['tile_size'], info['max_zoom'],
         info['max_width'], info['max_height'],
         im_type,
-        'bockwurst'  # slugid.nice().decode('utf-8')
     )
 
     db.execute(
         '''
         CREATE TABLE tiles
         (
-            id str PRIMARY KEY,
-            x int,
-            y int,
-            z int,
-            image blob
+            id VARCHAR(18) PRIMARY KEY,
+            x INT,
+            y INT,
+            z INT,
+            image BLOB
         )
         ''')
     db.commit()

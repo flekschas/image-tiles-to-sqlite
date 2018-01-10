@@ -23,7 +23,7 @@ def test(tileset, output, verbose):
 
     (
         _, _, _, _, _,
-        tile_size, max_zoom, max_height, max_width, dtype, uid, created
+        tile_size, max_zoom, max_height, max_width, dtype
     ) = db.execute('SELECT * FROM tileset_info').fetchone()
 
     if not tile_size:
@@ -36,10 +36,6 @@ def test(tileset, output, verbose):
         sys.exit('Max width ({}) invalid!'.format(max_width))
     if not dtype:
         sys.exit('Data type ({}) invalid!'.format(dtype))
-    if not uid:
-        sys.exit('UID ({}) invalid!'.format(uid))
-    if not created:
-        sys.exit('Creation date ({}) invalid!'.format(created))
 
     pathlib.Path(
         '{}/{}/tiles'.format(output, basename)
