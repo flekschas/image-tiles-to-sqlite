@@ -63,7 +63,7 @@ Take a look at [im2db.py](im2db.py); trust me, it's a short file. Under the hood
 - tileset_info
 - tiles
 
-`tileset_info` is an extension of [clodius](https://github.com/pkerp/clodius)'s metadata table and holds the following columns:
+`tileset_info` is an extension of [clodius](https://github.com/hms-dbmi/clodius)'s metadata table and holds the following columns:
 
 - **zoom_step** [_INT_]: _not used_
 - **max_length** [_INT_]: _not used_
