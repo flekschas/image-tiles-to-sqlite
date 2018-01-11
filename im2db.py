@@ -47,7 +47,7 @@ def store_meta_data(
     pass
 
 
-def image_tiles_to_sqlite(
+def image_tiles_to_db(
     source_dir, output_file, tileset_info, im_type, verbose
 ):
     if not os.path.isdir(source_dir):
@@ -170,7 +170,7 @@ def main():
 
     args = parser.parse_args()
 
-    image_tiles_to_sqlite(
+    image_tiles_to_db(
         args.dir, args.output, args.info, args.imtype, args.verbose
     )
 

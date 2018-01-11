@@ -16,7 +16,7 @@ This script can aggregate tile sets from the [Gigapan Downloader](https://github
 
 ```bash
 git clone https://github.com/flekschas/image-tiles-to-sqlite && cd image-tiles-to-sqlite
-mkvirtualenv -a $(pwd) -p python3 im2sql  // Not necessary but recommended
+mkvirtualenv -a $(pwd) -p python3 im2db  // Not necessary but recommended
 pip install --upgrade -r ./requirements.txt
 ```
 
@@ -25,7 +25,7 @@ pip install --upgrade -r ./requirements.txt
 ## CLI
 
 ```bash
-usage: im2sql.py [-h] [-o OUTPUT] [-i INFO] [-t {jpg,png,gif}] [-v] dir
+usage: im2db.py [-h] [-o OUTPUT] [-i INFO] [-t {jpg,png,gif}] [-v] dir
 
 positional arguments:
   dir                   directory of image tiles to be converted
@@ -43,7 +43,7 @@ optional arguments:
 **Example:**
 
 ```
-./im2sql.py test/54825
+./im2db.py test/54825
 // -> 54825.imtiles
 ```
 
@@ -58,7 +58,7 @@ This runs an end-to-end test on the test data (`test/54825`)
 
 ## What's Going On?
 
-Take a look at [im2sql.py](im2sql.py); trust me, it's a short file. Under the hood the script creates a SQLite database holding following two tables:
+Take a look at [im2db.py](im2db.py); trust me, it's a short file. Under the hood the script creates a SQLite database holding following two tables:
 
 - tileset_info
 - tiles
