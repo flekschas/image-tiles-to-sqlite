@@ -58,18 +58,26 @@ def test(tileset, output, verbose):
             for x in range(wt):
                 id = '{}.{}.{}'.format(z, y, x)
 
-                sql = 'SELECT id, image FROM tiles WHERE id = :id'
-                param = {'id': id}
-                _, image_blob = db.execute(sql, param).fetchone()
+                sql = (
+                    'SELECT image FROM tiles '
+                    'WHERE z = :z AND y = :y AND x =:x'
+                )
+                param = {'z': z, 'y': y, 'x': x}
+                image_blob = db.execute(sql, param).fetchone()
 
-                filename = '{}.{}'.format(id, dtype)
-                file_path = os.path.join(output, basename, 'tiles', filename)
+                if image_blob:
+                    image_blob = image_blob[0]
 
-                if verbose:
-                    print('Write {}'.format(file_path))
+                    filename = '{}.{}'.format(id, dtype)
+                    file_path = os.path.join(
+                        output, basename, 'tiles', filename
+                    )
 
-                with open(file_path, 'wb') as f:
-                    f.write(image_blob)
+                    if verbose:
+                        print('Write {}'.format(file_path))
+
+                    with open(file_path, 'wb') as f:
+                        f.write(image_blob)
 
     db.close()
 

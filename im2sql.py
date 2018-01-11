@@ -91,16 +91,16 @@ def image_tiles_to_sqlite(
         '''
         CREATE TABLE tiles
         (
-            id VARCHAR(18) PRIMARY KEY,
-            x INT,
-            y INT,
-            z INT,
-            image BLOB
+            z INT NOT NULL,
+            y INT NOT NULL,
+            x INT NOT NULL,
+            image BLOB,
+            PRIMARY KEY (z, y, x)
         )
         ''')
     db.commit()
 
-    query_insert_tile = 'INSERT INTO tiles VALUES (?,?,?,?,?)'
+    query_insert_tile = 'INSERT INTO tiles VALUES (?,?,?,?)'
 
     for z in range(info['max_zoom'] + 1):
         div = 2 ** (info['max_zoom'] - z)
@@ -120,7 +120,7 @@ def image_tiles_to_sqlite(
                         im_blob = f.read()
                         db.execute(
                             query_insert_tile,
-                            (tile_id, x, y, z, sqlite3.Binary(im_blob))
+                            (z, y, x, sqlite3.Binary(im_blob))
                         )
                         db.commit()
                 else:

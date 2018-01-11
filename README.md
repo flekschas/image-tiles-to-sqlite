@@ -16,7 +16,7 @@ This script can aggregate tile sets from the [Gigapan Downloader](https://github
 
 ```bash
 git clone https://github.com/flekschas/image-tiles-to-sqlite && cd image-tiles-to-sqlite
-mkvirtualenv -a $(pwd) -p python3 im2sql  // Not necessaru but recommended
+mkvirtualenv -a $(pwd) -p python3 im2sql  // Not necessary but recommended
 pip install --upgrade -r ./requirements.txt
 ```
 
@@ -60,10 +60,10 @@ This runs an end-to-end test on the test data (`test/54825`)
 
 Take a look at [im2sql.py](im2sql.py); trust me, it's a short file. Under the hood the script creates a SQLite database holding following two tables:
 
-- tileset_metadata
+- tileset_info
 - tiles
 
-`tileset_metadata` is an extension of [clodius](https://github.com/pkerp/clodius)'s metadata table and holds the following columns:
+`tileset_info` is an extension of [clodius](https://github.com/pkerp/clodius)'s metadata table and holds the following columns:
 
 - **zoom_step** [_INT_]: _not used_
 - **max_length** [_INT_]: _not used_
@@ -76,10 +76,9 @@ Take a look at [im2sql.py](im2sql.py); trust me, it's a short file. Under the ho
 - **max_width** [_INT_]: Max. width, i.e., width at max. zoom level.
 - **dtype** [_TEXT_]: Data type of the images. Either _jpg_, _png_, or _gif_.
 
-`tiles` is storing the tiles's binary image data and position and consist of the following columns:
+`tiles` is storing the tiles's binary image data and position and consist of the following columns. The primary key is composed of `z`, `y`, and `x`.
 
-- **id** [_VARCHAR(18)_]: Primary key and tile ID. (zz.yyyyyyy.xxxxxxx)
-- **x** [_INT_]: X position of the tile.
-- **y** [_INT_]: Y position of the tile.
 - **z** [_INT_]: Z position of the tile.
+- **y** [_INT_]: Y position of the tile.
+- **x** [_INT_]: X position of the tile.
 - **image** [_BLOB_]: The binary image data of a tile.
