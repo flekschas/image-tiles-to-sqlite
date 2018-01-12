@@ -24,6 +24,8 @@ pip install --upgrade -r ./requirements.txt
 
 ## CLI
 
+### Image tiles to SQLite db
+
 ```bash
 usage: im2db.py [-h] [-o OUTPUT] [-i INFO] [-t {jpg,png,gif}] [-v] dir
 
@@ -54,9 +56,8 @@ This runs an end-to-end test on the test data (`test/54825`)
 ```
 ./run_test.sh
 ```
----
 
-## What's Going On?
+#### What's Going On?
 
 Take a look at [im2db.py](im2db.py); trust me, it's a short file. Under the hood the script creates a SQLite database holding following two tables:
 
@@ -72,8 +73,8 @@ Take a look at [im2db.py](im2db.py); trust me, it's a short file. Under the hood
 - **chrom_sizes** [_TEXT_]: _not used_
 - **tile_size** [_INT_]: Size in pixel of the tiles
 - **max_zoom** [_INT_]: Max. zoom level.
-- **max_height** [_INT_]: Max. height, i.e., height at max. zoom level.
 - **max_width** [_INT_]: Max. width, i.e., width at max. zoom level.
+- **max_height** [_INT_]: Max. height, i.e., height at max. zoom level.
 - **dtype** [_TEXT_]: Data type of the images. Either _jpg_, _png_, or _gif_.
 
 `tiles` is storing the tiles's binary image data and position and consist of the following columns. The primary key is composed of `z`, `y`, and `x`.
@@ -82,3 +83,61 @@ Take a look at [im2db.py](im2db.py); trust me, it's a short file. Under the hood
 - **y** [_INT_]: Y position of the tile.
 - **x** [_INT_]: X position of the tile.
 - **image** [_BLOB_]: The binary image data of a tile.
+
+
+### Gigapan snapshots to BEDPE SQLite database
+
+```
+usage: snapshots2db.py [-h] [-o OUTPUT] [-i INFO] [-m MAX] [-v] file
+
+positional arguments:
+  file                  snapshots file to be converted
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        name of the sqlite database to be generated
+  -i INFO, --info INFO  name of the tile set info file
+  -m MAX, --max MAX     maximum number of annotations per tile
+  -v, --verbose         increase output verbosity
+```
+
+#### What's Going On?
+
+Take a look at [snapshots2db.py](snapshots2db.py). Under the hood the script creates a SQLite database holding following three tables:
+
+- tileset_info
+- tiles
+
+`tileset_info` is an extension of [clodius](https://github.com/hms-dbmi/clodius)'s metadata table and holds the following columns:
+
+- **zoom_step** [_INT_]: _not used_
+- **max_length** [_INT_]: _not used_
+- **assembly** [_TEXT_]: _not used_
+- **chrom_names** [_TEXT_]: _not used_
+- **chrom_sizes** [_TEXT_]: _not used_
+- **tile_size** [_INT_]: Size in pixel of the tiles
+- **max_zoom** [_INT_]: Max. zoom level.
+- **max_width** [_INT_]: Max. width, i.e., width at max. zoom level.
+- **max_height** [_INT_]: Max. height, i.e., height at max. zoom level.
+
+`intervals` is storing the tiles's binary image data and position and consist of the following columns. The primary key is composed of `z`, `y`, and `x`.
+
+- **id** [_INT_]: Primary key
+- **zoomLevel** [_INT_]: Zoom level
+- **importance** [_REAL_]: Number of views
+- **fromX** [_INT_]: Start x position
+- **toX** [_INT_]: End x position
+- **fromY** [_INT_]: Start y position
+- **toY** [_INT_]: End y position
+- **chrOffset** [_INT_]: _not used_
+- **uid** [_TEXT_]: Random uuid
+- **fields** [_TEXT_]: Other fields; currently holding the snapshot description
+
+`position_index` is storing the tiles's binary image data and position and consist of the following columns. The primary key is composed of `z`, `y`, and `x`.
+
+- **id** [_INT_]: Primary key
+- **rFromX** [_INT_]: Start x position
+- **rToX** [_INT_]: End x position
+- **rFromY** [_INT_]: Start y position
+- **rToY** [_INT_]: End y position

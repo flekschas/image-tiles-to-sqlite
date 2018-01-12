@@ -74,8 +74,6 @@ def snapshots_to_db(
     if not output_file:
         output_file = '{}.multires.db'.format(base_dir)
 
-    print(output_file)
-
     if os.path.isfile(output_file):
         sys.exit(
             'Output exists already! 😬  Please check and remove it if ' +
