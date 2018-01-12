@@ -22,8 +22,8 @@ def store_meta_data(
             chrom_sizes TEXT,
             tile_size INT,
             max_zoom INT,
-            max_height INT,
             max_width INT,
+            max_height INT,
             dtype TEXT
         )
         ''')
@@ -37,8 +37,8 @@ def store_meta_data(
             chrom_sizes,
             tile_size,
             max_zoom,
-            max_height,
             max_width,
+            max_height,
             dtype
         )
     )
