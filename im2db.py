@@ -10,7 +10,8 @@ import json
 
 def store_meta_data(
     db, zoom_step, max_length, assembly, chrom_names,
-    chrom_sizes, tile_size, max_zoom, max_width, max_height, dtype
+    chrom_sizes, tile_size, max_zoom, max_size,
+    width, height, dtype
 ):
     db.execute('''
         CREATE TABLE tileset_info
@@ -22,14 +23,15 @@ def store_meta_data(
             chrom_sizes TEXT,
             tile_size INT,
             max_zoom INT,
-            max_width INT,
-            max_height INT,
+            max_size INT,
+            width INT,
+            height INT,
             dtype TEXT
         )
         ''')
 
     db.execute(
-        'INSERT INTO tileset_info VALUES (?,?,?,?,?,?,?,?,?,?)', (
+        'INSERT INTO tileset_info VALUES (?,?,?,?,?,?,?,?,?,?,?)', (
             zoom_step,
             max_length,
             assembly,
@@ -37,8 +39,9 @@ def store_meta_data(
             chrom_sizes,
             tile_size,
             max_zoom,
-            max_width,
-            max_height,
+            max_size,
+            width,
+            height,
             dtype
         )
     )
@@ -83,6 +86,7 @@ def image_tiles_to_db(
     store_meta_data(
         db, 1, -1, None, None, None,
         info['tile_size'], info['max_zoom'],
+        info['tile_size'] * (2 ** info['max_zoom']),
         info['max_width'], info['max_height'],
         im_type,
     )

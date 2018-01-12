@@ -12,7 +12,7 @@ import collections as col
 
 def store_meta_data(
     db, zoom_step, max_length, assembly, chrom_names,
-    chrom_sizes, tile_size, max_zoom, max_width, max_height
+    chrom_sizes, tile_size, max_zoom, max_size, width, height
 ):
     db.execute('''
         CREATE TABLE tileset_info
@@ -24,22 +24,24 @@ def store_meta_data(
             chrom_sizes TEXT,
             tile_size INT,
             max_zoom INT,
-            max_width INT,
-            max_height INT
+            max_size INT,
+            width INT,
+            height INT
         )
         ''')
 
     db.execute(
-        'INSERT INTO tileset_info VALUES (?,?,?,?,?,?,?,?,?)', (
+        'INSERT INTO tileset_info VALUES (?,?,?,?,?,?,?,?,?,?)', (
             zoom_step,
-            max(max_width, max_height),
+            max(width, height),
             assembly,
             chrom_names,
             chrom_sizes,
             tile_size,
             max_zoom,
-            max_width,
-            max_height,
+            max_size,
+            width,
+            height
         )
     )
     db.commit()
@@ -95,6 +97,7 @@ def snapshots_to_db(
     store_meta_data(
         db, 1, -1, None, None, None,
         info['tile_size'], info['max_zoom'],
+        info['tile_size'] * (2 ** info['max_zoom']),
         info['max_width'], info['max_height']
     )
 
@@ -145,7 +148,7 @@ def snapshots_to_db(
 
             # check if any of the tiles at this zoom level are full
             for i in range(tile_from_x, tile_to_x + 1):
-                if not tile_is_full:
+                if tile_is_full:
                     continue
 
                 for j in range(tile_from_y, tile_to_y + 1):
@@ -160,36 +163,37 @@ def snapshots_to_db(
                     for j in range(tile_from_y, tile_to_y + 1):
                         tile_counts[z][i][j] += 1
 
-            annotation = (
-                counter,
-                z,
-                float(snapshot['views']),  # importance real
-                snapshot['xmin'],  # fromX int,
-                snapshot['xmax'],  # toX int,
-                snapshot['ymin'],  # fromY int,
-                snapshot['ymax'],  # toY int,
-                0,  # chrOffset int,
-                slugid.nice().decode('utf-8'),  # uid text,
-                snapshot['description'],  # fields text
-            )
-
-            insert_anno = 'INSERT INTO intervals VALUES (?,?,?,?,?,?,?,?,?,?)'
-
-            db.execute(insert_anno, annotation)
-            db.commit()
-
-            insert_pos = 'INSERT INTO position_index VALUES (?,?,?,?,?)'
-            db.execute(
-                insert_pos,
-                (
+                annotation = (
                     counter,
-                    snapshot['xmin'], snapshot['xmax'],
-                    snapshot['ymin'], snapshot['ymax']
+                    z,
+                    float(snapshot['views']),  # importance real
+                    snapshot['xmin'],  # fromX int,
+                    snapshot['xmax'],  # toX int,
+                    snapshot['ymin'],  # fromY int,
+                    snapshot['ymax'],  # toY int,
+                    0,  # chrOffset int,
+                    slugid.nice().decode('utf-8'),  # uid text,
+                    snapshot['description'],  # fields text
                 )
-            )
-            db.commit()
 
-            counter += 1
+                insert_anno =\
+                    'INSERT INTO intervals VALUES (?,?,?,?,?,?,?,?,?,?)'
+
+                db.execute(insert_anno, annotation)
+                db.commit()
+
+                insert_pos = 'INSERT INTO position_index VALUES (?,?,?,?,?)'
+                db.execute(
+                    insert_pos,
+                    (
+                        counter,
+                        snapshot['xmin'], snapshot['xmax'],
+                        snapshot['ymin'], snapshot['ymax']
+                    )
+                )
+                db.commit()
+
+                counter += 1
 
 
 def main():

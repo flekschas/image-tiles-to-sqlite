@@ -73,8 +73,9 @@ Take a look at [im2db.py](im2db.py); trust me, it's a short file. Under the hood
 - **chrom_sizes** [_TEXT_]: _not used_
 - **tile_size** [_INT_]: Size in pixel of the tiles
 - **max_zoom** [_INT_]: Max. zoom level.
-- **max_width** [_INT_]: Max. width, i.e., width at max. zoom level.
-- **max_height** [_INT_]: Max. height, i.e., height at max. zoom level.
+- **max_size** [_INT_]: Max. width, i.e., `tile_size * 2^max_zoom`.
+- **width** [_INT_]: Width of the image
+- **height** [_INT_]: Height of the image
 - **dtype** [_TEXT_]: Data type of the images. Either _jpg_, _png_, or _gif_.
 
 `tiles` is storing the tiles's binary image data and position and consist of the following columns. The primary key is composed of `z`, `y`, and `x`.
@@ -118,8 +119,9 @@ Take a look at [snapshots2db.py](snapshots2db.py). Under the hood the script cre
 - **chrom_sizes** [_TEXT_]: _not used_
 - **tile_size** [_INT_]: Size in pixel of the tiles
 - **max_zoom** [_INT_]: Max. zoom level.
-- **max_width** [_INT_]: Max. width, i.e., width at max. zoom level.
-- **max_height** [_INT_]: Max. height, i.e., height at max. zoom level.
+- **max_size** [_INT_]: Max. width, i.e., `tile_size * 2^max_zoom`.
+- **width** [_INT_]: Width of the image
+- **height** [_INT_]: Height of the image
 
 `intervals` is storing the tiles's binary image data and position and consist of the following columns. The primary key is composed of `z`, `y`, and `x`.
 
