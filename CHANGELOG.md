@@ -1,3 +1,7 @@
+**v0.3.0**
+
+- Fix `max_width` and rename to `max_size`. (Also get rid of `max_height`)
+
 **v0.2.0**
 
 - Finalize file format of `imtiles` (not compatible with `v0.1.0` anymore)
