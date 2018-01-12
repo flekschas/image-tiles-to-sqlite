@@ -85,6 +85,20 @@ Take a look at [im2db.py](im2db.py); trust me, it's a short file. Under the hood
 - **x** [_INT_]: X position of the tile.
 - **image** [_BLOB_]: The binary image data of a tile.
 
+#### Display in HiGlass
+
+```
+./manage.py ingest_tileset \
+  --filename imtiles/<IMTILES-NAME>.imtiles \
+  --filetype imtiles \
+  --datatype <jpg,png,gif> \
+  --coordSystem pixel \
+  --coordSystem2 pixel \
+  --uid <IMTILES-NAME> \
+  --name '<IMTILES-NAME>' \
+  --no-upload
+```
+
 
 ### Gigapan snapshots to BEDPE SQLite database
 
@@ -143,3 +157,17 @@ Take a look at [snapshots2db.py](snapshots2db.py). Under the hood the script cre
 - **rToX** [_INT_]: End x position
 - **rFromY** [_INT_]: Start y position
 - **rToY** [_INT_]: End y position
+
+#### Display in HiGlass
+
+```
+./manage.py ingest_tileset \
+  --filename imtiles/<IMTILES-NAME>.snapshots.db \
+  --filetype 2dannodb \
+  --datatype 2d-rectangle-domains \
+  --coordSystem pixel \
+  --coordSystem2 pixel \
+  --uid <IMTILES-NAME>-snapshots \
+  --name '<IMTILES-NAME> Snapshots' \
+  --no-upload
+```
