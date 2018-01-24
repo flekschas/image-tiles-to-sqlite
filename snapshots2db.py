@@ -195,6 +195,7 @@ def snapshots_to_db(
                 db.commit()
 
                 counter += 1
+                break
 
 
 def main():
