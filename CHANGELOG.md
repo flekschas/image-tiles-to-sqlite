@@ -1,3 +1,7 @@
+**v0.4.0**
+
+- Fix duplicated annotation entries, which saves lots of space and avoids retrieving duplicated annotations.
+
 **v0.3.0**
 
 - Fix `max_width` and rename to `max_size`. (Also get rid of `max_height`)
