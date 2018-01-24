@@ -139,28 +139,29 @@ def snapshots_to_db(
         for z in range(info['max_zoom'] + 1):
             tile_width = info['tile_size'] * 2 ** (info['max_zoom'] - z)
 
-            tile_from_x = math.floor(snapshot['xmin'] / tile_width)
-            tile_to_x = math.ceil(snapshot['xmax'] / tile_width)
-            tile_from_y = math.floor(snapshot['ymin'] / tile_width)
-            tile_to_y = math.ceil(snapshot['ymax'] / tile_width)
+            # Tile IDs (not tiles)
+            tile_id_start_x = math.floor(snapshot['xmin'] / tile_width)
+            tile_id_end_x = math.ceil(snapshot['xmax'] / tile_width)
+            tile_id_start_y = math.floor(snapshot['ymin'] / tile_width)
+            tile_id_end_y = math.ceil(snapshot['ymax'] / tile_width)
 
             tile_is_full = False
 
             # check if any of the tiles at this zoom level are full
-            for i in range(tile_from_x, tile_to_x + 1):
+            for i in range(tile_id_start_x, tile_id_end_x + 1):
                 if tile_is_full:
                     continue
 
-                for j in range(tile_from_y, tile_to_y + 1):
+                for j in range(tile_id_start_y, tile_id_end_y + 1):
                     if tile_counts[z][i][j] > max_per_tile:
 
                         tile_is_full = True
                         continue
 
             if not tile_is_full:
-                # they're all empty so add this interval to this zoom level
-                for i in range(tile_from_x, tile_to_x + 1):
-                    for j in range(tile_from_y, tile_to_y + 1):
+                # they're all not full yet so add this interval
+                for i in range(tile_id_start_x, tile_id_end_x + 1):
+                    for j in range(tile_id_start_y, tile_id_end_y + 1):
                         tile_counts[z][i][j] += 1
 
                 annotation = (
@@ -220,7 +221,7 @@ def main():
 
     parser.add_argument(
         '-m', '--max',
-        default=50,
+        default=20,
         help='maximum number of annotations per tile',
         type=int
     )
