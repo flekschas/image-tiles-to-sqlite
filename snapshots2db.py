@@ -66,12 +66,13 @@ def snapshots_to_db(
 
     base_dir = os.path.dirname(snapshots_path)
 
-    tileset_info = os.path.join(base_dir, tileset_info)
     if not os.path.isfile(tileset_info):
-        tileset_info = os.path.join(base_dir, 'info.json')
+        tileset_info = os.path.join(base_dir, tileset_info)
         if not os.path.isfile(tileset_info):
-            sys.exit('Tile set info file not found! 😫')
-        print('Info: using default tile set info file. 🤓')
+            tileset_info = os.path.join(base_dir, 'info.json')
+            if not os.path.isfile(tileset_info):
+                sys.exit('Tile set info file not found! 😫')
+            print('Info: using default tile set info file. 🤓')
 
     if not output_file:
         output_file = '{}.multires.db'.format(base_dir)
