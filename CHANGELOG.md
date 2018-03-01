@@ -1,6 +1,7 @@
 **v0.4.1**
 
 - Minor fix for `snapshots2db`: do not force tileset info to be in the same directory as the snappshot file
+- Store Gigapan Annotation ID, creation date, name, and description, in the `fields` field
 
 **v0.4.0**
 
