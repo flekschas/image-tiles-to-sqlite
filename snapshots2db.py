@@ -175,7 +175,12 @@ def snapshots_to_db(
                     snapshot['ymax'],  # toY int,
                     0,  # chrOffset int,
                     slugid.nice().decode('utf-8'),  # uid text,
-                    snapshot['description'],  # fields text
+                    json.dumps({
+                        'id': snapshot['id'],
+                        'created_at': snapshot['created_at'],
+                        'name': snapshot['name'],
+                        'description': snapshot['description'],
+                    }),  # fields text
                 )
 
                 insert_anno =\
