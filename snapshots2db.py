@@ -54,7 +54,19 @@ def snapshot_to_bedpe(snapshot):
 
 
 def snapshots_to_db(
-    snapshots_path, output_file, tileset_info, max_per_tile, verbose
+    snapshots_path,
+    output_file,
+    tileset_info,
+    max_per_tile,
+    from_x,
+    to_x,
+    from_y,
+    to_y,
+    xlim_rel,
+    ylim_rel,
+    limit_excl,
+    overwrite,
+    verbose
 ):
     if not os.path.isfile(snapshots_path):
         sys.exit('Snapshots file not found! ☹️')
@@ -78,10 +90,16 @@ def snapshots_to_db(
         output_file = '{}.multires.db'.format(base_dir)
 
     if os.path.isfile(output_file):
-        sys.exit(
-            'Output exists already! 😬  Please check and remove it if ' +
-            'necessary.'
-        )
+        if overwrite:
+            try:
+                os.remove(output_file)
+            except OSError:
+                pass
+        else:
+            sys.exit(
+                'Output exists already! 😬  Please check and remove it if ' +
+                'necessary.'
+            )
 
     # Read tile set info
     with open(tileset_info, 'r') as f:
@@ -89,6 +107,21 @@ def snapshots_to_db(
 
     if not info:
         sys.exit('Tile set info broken! 😤')
+
+    assert(from_x < to_x)
+    assert(from_y < to_y)
+
+    if from_x > -math.inf and xlim_rel:
+        from_x = info['max_width'] * from_x
+
+    if to_x > -math.inf and xlim_rel:
+        to_x = info['max_width'] * to_x
+
+    if from_y > -math.inf and xlim_rel:
+        from_y = info['max_width'] * from_y
+
+    if to_y > -math.inf and xlim_rel:
+        to_y = info['max_width'] * to_y
 
     # Create a new SQLite db
     # this script stores data in a sqlite database
@@ -136,6 +169,27 @@ def snapshots_to_db(
         snapshot['xmax'] = math.ceil(snapshot['xmax'])
         snapshot['ymin'] = math.floor(snapshot['ymin'])
         snapshot['ymax'] = math.ceil(snapshot['ymax'])
+
+        if (
+            snapshot['xmin'] > to_x or
+            snapshot['xmax'] < from_x or
+            snapshot['ymin'] > to_y or
+            snapshot['ymax'] < from_y
+        ):
+            # Skip because it's outside the specified limits
+            continue
+
+        if (
+            limit_excl and
+            (
+                snapshot['xmax'] > to_x or
+                snapshot['xmin'] < from_x or
+                snapshot['ymax'] > to_y or
+                snapshot['ymin'] < from_y
+            )
+        ):
+            # Skip because it's not fully inside the specified limits
+            continue
 
         for z in range(info['max_zoom'] + 1):
             tile_width = info['tile_size'] * 2 ** (info['max_zoom'] - z)
@@ -228,9 +282,76 @@ def main():
 
     parser.add_argument(
         '-m', '--max',
-        default=20,
+        default=25,
         help='maximum number of annotations per tile',
         type=int
+    )
+
+    parser.add_argument(
+        '--from-x',
+        default=-math.inf,
+        help='only include tiles which end-x is greater than this value',
+        type=float
+    )
+
+    parser.add_argument(
+        '--to-x',
+        default=math.inf,
+        help='only include tiles which start-x is smaller than this value',
+        type=float
+    )
+
+    parser.add_argument(
+        '--from-y',
+        default=-math.inf,
+        help='only include tiles which end-y is greater than this value',
+        type=float
+    )
+
+    parser.add_argument(
+        '--to-y',
+        default=math.inf,
+        help='only include tiles which start-y is smaller than this value',
+        type=float
+    )
+
+    parser.add_argument(
+        '--xlim-rel',
+        default=False,
+        action='store_true',
+        help=(
+            'x limits, defined via `--from-x` etc., are in percentage '
+            'relative to the full size'
+        ),
+    )
+
+    parser.add_argument(
+        '--ylim-rel',
+        default=False,
+        action='store_true',
+        help=(
+            'y limits, defined via `--from-y` etc., are in percentage '
+            'relative to the full size'
+        ),
+    )
+
+    parser.add_argument(
+        '--limit-excl',
+        default=False,
+        action='store_true',
+        help=(
+            'if limits are defined via `--from-x` etc. elements have to be '
+            'fully inside them'
+        ),
+    )
+
+    parser.add_argument(
+        '-w', '--overwrite',
+        default=False,
+        action='store_true',
+        help=(
+            'overwrite output if exist'
+        ),
     )
 
     parser.add_argument(
@@ -242,7 +363,19 @@ def main():
     args = parser.parse_args()
 
     snapshots_to_db(
-        args.file, args.output, args.info, args.max, args.verbose
+        args.file,
+        args.output,
+        args.info,
+        args.max,
+        args.from_x,
+        args.to_x,
+        args.from_y,
+        args.to_y,
+        args.xlim_rel,
+        args.ylim_rel,
+        args.limit_excl,
+        args.overwrite,
+        args.verbose
     )
 
 if __name__ == '__main__':
