@@ -103,7 +103,15 @@ Take a look at [im2db.py](im2db.py); trust me, it's a short file. Under the hood
 ### Gigapan snapshots to BEDPE SQLite database
 
 ```
-usage: snapshots2db.py [-h] [-o OUTPUT] [-i INFO] [-m MAX] [-v] file
+usage: snapshots2db.py [-h] [-o OUTPUT] [-i INFO] [-m MAX] [-p]
+                       [--pre-fetch-file PRE_FETCH_FILE]
+                       [--pre-fetch-zoom-from PRE_FETCH_ZOOM_FROM]
+                       [--pre-fetch-zoom-to PRE_FETCH_ZOOM_TO]
+                       [--pre_fetch_max_size PRE_FETCH_MAX_SIZE]
+                       [--from-x FROM_X] [--to-x TO_X] [--from-y FROM_Y]
+                       [--to-y TO_Y] [--xlim-rel] [--ylim-rel] [--limit-excl]
+                       [-w] [-v]
+                       file
 
 positional arguments:
   file                  snapshots file to be converted
@@ -114,6 +122,31 @@ optional arguments:
                         name of the sqlite database to be generated
   -i INFO, --info INFO  name of the tile set info file
   -m MAX, --max MAX     maximum number of annotations per tile
+  -p, --pre-fetch       preload and store an image pyramind for every
+                        annotation
+  --pre-fetch-file PRE_FETCH_FILE
+                        imtiles files to preload the annotations from
+  --pre-fetch-zoom-from PRE_FETCH_ZOOM_FROM
+                        initial zoom of for preloading (farthest zoomed out)
+  --pre-fetch-zoom-to PRE_FETCH_ZOOM_TO
+                        final zoom of for preloading (farthest zoomed in)
+  --pre_fetch_max_size PRE_FETCH_MAX_SIZE
+                        max size (in pixel) for preloading a snapshot
+  --from-x FROM_X       only include tiles which end-x is greater than this
+                        value
+  --to-x TO_X           only include tiles which start-x is smaller than this
+                        value
+  --from-y FROM_Y       only include tiles which end-y is greater than this
+                        value
+  --to-y TO_Y           only include tiles which start-y is smaller than this
+                        value
+  --xlim-rel            x limits, defined via `--from-x` etc., are in
+                        percentage relative to the full size
+  --ylim-rel            y limits, defined via `--from-y` etc., are in
+                        percentage relative to the full size
+  --limit-excl          if limits are defined via `--from-x` etc. elements
+                        have to be fully inside them
+  -w, --overwrite       overwrite output if exist
   -v, --verbose         increase output verbosity
 ```
 
