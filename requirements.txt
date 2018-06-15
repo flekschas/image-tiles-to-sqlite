@@ -1,1 +1,3 @@
 slugid==1.0.7
+numpy==1.14.3
+Pillow==5.1.0
